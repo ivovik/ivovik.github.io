@@ -1,0 +1,42 @@
+<!doctype html>
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		
+		<title>Beeline</title>
+
+	</head>
+
+		<script>
+			function LoadPage(){ 
+				var vars = {};
+				var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+						vars[key] = value;
+				});
+				var name = vars["name"];
+				var EAN = vars["EAN"];
+				var flocktorySrc = "//share.flocktory.com/exchange/login?ssid=1760&bid=458";
+				var actionsSrc = "actions.html";
+				if (typeof EAN !== 'undefined') {
+						flocktorySrc = flocktorySrc.concat("&email=",EAN,"@unknown.email");
+						actionsSrc = actionsSrc.concat("?EAN=",EAN);
+						}
+				if (typeof name !== 'undefined') {
+						flocktorySrc = flocktorySrc.concat("&name=",name);
+				}
+				document.getElementById( 'flocktory' ).src = flocktorySrc;
+				document.getElementById( 'actions' ).src = actionsSrc;
+			}
+		</script>
+					
+		<frameset id="page" border = "no" rows="40,*,0" onload="LoadPage()">
+		<frame frameborder="0" name="menu" noresize scrolling="no" src="menu.html">
+		
+		<frame src="" 
+			frameborder="0" id="flocktory" noresize>
+
+		<frame src="" 
+			frameborder="0" id="actions" noresize>
+			
+		</frameset>
+		

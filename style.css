@@ -1,0 +1,123 @@
+@charset "utf-8";
+
+body {    background-color: #151414;
+    background: #151414; min-width: 200px;}
+
+.onlineActions .chew-cell {
+    padding: 0.5em; /* vertical & horizontal gutter of 1em (= 2 * 0.5em) */
+}
+
+.onlineActions .chew-cell {
+    width: 33%; /* 3 columns */
+}
+
+.onlineActions .chew-cell {
+    min-width: 240px
+}
+
+.card { margin:1%; border-radius:5px; min-height:50px; background-color:#ffffff; width:98%; position:relative;}	
+		
+.flip {
+    perspective: 800px;
+    -moz-perspective: 800px;
+    -webkit-perspective: 800px;
+    width: 100%;
+    transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transition: 0.5s;
+    -moz-transition: 0.5s;
+    -webkit-transition: 0.5s;
+    cursor: pointer;
+	padding-bottom: 60px /* место для кнопки */
+}
+.flip.flipped {
+    
+    -moz-transform: rotateY(-180deg);
+    -webkit-transform: rotateY(-180deg);
+	transform: rotateY(-180deg);
+}
+.flip .face {
+    backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+.flip .front {
+    display: block;
+}
+.flip.flipped .front {
+    display:none;
+}
+.flip .back {   
+    -moz-transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+	transform: rotateY(180deg);
+    display:none;
+}
+
+.flip.flipped .back {
+    display:block;
+}
+		
+a.morelink {
+    text-decoration:none;
+    outline: none;
+	display: inline;
+	font-family: 'officinaserifcbold', Arial, sans-serif; 
+	border-bottom: 1px dashed #999;
+	color: #282828;
+	cursor: pointer;
+	position: relative;
+}
+.morecontent  {
+    display: none;
+}
+		
+		.card_item_top img { width:100%; border-radius:5px 5px 0 0;}
+		.card_item_bottom {clear:both; margin:0; padding: 0 2vw; }
+		.card_item_bottom_left {width:25%; vertical-align:middle; display: table-cell; }
+		.card_item_bottom_left img {margin:0; padding:0; width:100%; }
+				.card_item_bottom_right {margin:0; padding:0 0 0 2vw; display: table-cell; vertical-align: middle;}
+					.card_item_title {padding:0; font-family:'officinaserifcbold', Arial, sans-serif; font-weight:normal; font-size:18px; color:#fea700; }
+					.card_item_info {margin:0; padding:0; font-family:Arial, sans-serif; font-weight:normal; font-size:14px; color:#000000; display:block;}
+		
+		/*--- beecard panel ---*/
+		.back {margin:0 auto; padding:0; width:100%; border-radius:2vw; background-color:#ffffff;}	
+			.beecard_panel_top {
+			margin:0; 
+			padding:1vw 2vw; 
+			font-family:'officinaserifcbold', Arial, sans-serif; 
+			font-size:20px; 
+			color:#ffa200; 
+			border-bottom:1px solid #bfbfbf;
+			}
+			
+			.beecard_bonus {padding:0 0 0 26px; background:url(img/ico_gift.png) no-repeat left top; background-size:18px;}
+				
+			.beecard_panel_image {
+			  overflow: hidden;
+			}
+			.beecard_panel_image img {
+			  display: block;
+			  margin: -10% auto;
+			  width: 50%;
+			}
+				
+			.beecard_panel_info {padding:0vw 2vw; font-size:14px; }
+			.beecard_subtitle {padding:0vw 2vw 1vw; font-size:18px; }
+						
+			.beecard_panel_button {
+				display:block;
+				height: 30px;
+				width: 100%;
+				padding:15px 0;
+				text-align:center;
+				position: absolute;
+				bottom:0;
+				
+			}
+
+		
+
+
+

@@ -1,0 +1,327 @@
+	<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="Cache-Control" content="no-cache" />
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>Beeline</title>
+
+		<!-- Stylesheets 
+		<link href="css/chewing-grid.css" rel="stylesheet"></link>
+		<link href="css/forms.css" rel="stylesheet"></link>
+		<link href="css/texts.css" rel="stylesheet"></link>
+		<link href="style.css" rel="stylesheet"></link>
+		-->
+		<link href="fonts.css" rel="stylesheet"></link>
+		<link href="css/actions.css" rel="stylesheet"></link>
+
+		<!-- Scripts -->
+		<script src="js/jquery-2.1.3.min.js"></script>
+		<script type="text/javascript" src="js/parse-1.6.14.min.js"></script>
+		<script src="js/handlebars-v4.0.5.js"></script>
+		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="//storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css">
+		<script src="//storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
+		<link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+
+
+
+	</head>
+
+	<body>
+		<!-- Google Tag Manager -->
+		<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-T29DH2"
+		height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+		'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer','GTM-T29DH2');</script>
+		<!-- End Google Tag Manager -->
+
+		<script type="text/x-handlebars-template" id="share-menu"">
+			{{#sm}}
+				<button class="sharemenu mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect hidden" title="{{title}}" data-type="{{dt}}">	<i class="fa {{class}}"></i>	</button>
+			{{/sm}}
+		</script>
+
+														
+		<div class="mainContainer" id = "onlineShops" >
+
+			<script type="text/x-handlebars-template" id='table-data'>
+				<ul class="chew-row onlineActions">
+					{{#items}}
+					<li class="chew-cell">
+						<div class="chew-card card">
+							
+									<div class="front">
+										<div class="card_item_top">
+											<img src="{{#if parentId}}{{parentId.imageFile.url}}{{else}}{{imageFile.url}}{{/if}}" alt="">
+											
+											<div class="mdl-card__menu cardmenu">
+														<button class="sharebutton mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">	<i class="material-icons">share</i>	</button>
+														{{> sharemenu .. }}
+											</div>
+										</div>
+											<div class="h2"> 
+												{{title}}
+											</div>
+										<div class="card_item_bottom">
+											<div class="card_item_info">{{#if parentId}}{{parentId.subtitle}}{{else}}{{subtitle}}{{/if}}</div>
+										</div>
+						
+										<div class="beecard_panel_info">
+											{{{contentText}}}
+											<p>{{{contactInfo}}}</p>
+										</div>
+									
+									</div>
+								<div class="beecard_panel_button">
+									<a class="btn-link" href="{{targetURL}}{{#if parentId}}?subid={{EAN}}{{/if}}" target="_blank" id="click-{{#if sourceId}}{{sourceId}}{{else}}{{contentId}}{{/if}}"> <i class="fa fa-shopping-cart"></i>
+									&nbsp; {{#if targetName}}{{targetName}}{{else}}Начать покупки{{/if}}</a>
+								</div> 
+							</div>
+						
+					</li>	
+					{{/items}}              
+					<li class="chew-cell chew-cell--ghost"></li>
+					<li class="chew-cell chew-cell--ghost"></li>
+				</ul>
+			</script>
+
+		</div>
+
+		<script type="text/JavaScript" >
+
+			var vars = {};
+			var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+					vars[key] = value;
+				});
+			var sm = [{"title":"ВКонтакте", "class":"fa-vk", "dt":"vk", "url":"http://vk.com"},
+					  {"title":"Одноклассники", "class":"fa-odnoklassniki", "dt":"ok", "url":"http://ok.ru"},
+					  {"title":"Facebook", "class":"fa-facebook", "dt":"fb", "url":"http://fb.com"},
+					  {"title":"Twitter","class":"fa-twitter", "dt":"tw","url":"http://twitter.com"}
+			];
+
+			var session = vars["session"];
+			var EAN = vars["EAN"];
+			var city = vars["city"];
+			var name = vars["name"];
+			Parse.initialize("27OaUv04EXFliQUSh0Nv6K49YIITL1m7g79CBEum", "nlfPaLHJejOkEY9ATKrpkuhogwJgNYs4anMJ9bLC");
+			if (typeof session !== "undefined") {
+				Parse.User.become(session);
+			}
+			var Content = Parse.Object.extend("Content");
+			var query = new Parse.Query(Content);
+			query.containedIn("contentClass", ["PARTNER", "ADMITAD"]);
+			query.equalTo("visible", 	true);
+			query.greaterThanOrEqualTo("actualTo", new Date());
+			query.descending("sortIndex,createdAt");
+			var tableTemplate = $("#table-data").html();
+			var sharemenuTemplate = $("#share-menu").html();
+
+			query.find({
+				success : function (results) {
+					var items = [];
+
+					for (var i = 0; i < results.length; i++) {
+						if (results[i].get("contentClass") == "ADMITAD") {
+							items.push(results[i].toJSON());
+						}
+						if (results[i].get("contentClass") == "PARTNER" && results[i].get("landingPartner") == true) {
+							items.push(results[i].toJSON());
+						}
+
+					}
+
+					
+					var sharepartial = Handlebars.registerPartial("sharemenu", sharemenuTemplate);
+					var template = Handlebars.compile(tableTemplate);
+
+					Handlebars.registerHelper("EAN", function (item) {
+						return vars["EAN"];
+					});
+
+					var templateContent = template({
+							items : items,
+							sm : sm
+						});
+					$("div.mainContainer").append(templateContent);
+					
+					$(".sharebutton").click(function () {
+						$(".sharebutton").each(function () {
+						 if ($(this).hasClass('less')) {
+							$(this).removeClass('less');
+							$(this).toggle();
+							$(this).nextAll(".sharemenu").addClass("hidden");
+							
+						}
+						});
+						$(this).addClass("less");
+						$(this).toggle();
+						$(this).nextAll(".sharemenu").removeClass("hidden");
+						
+						return false;
+					});
+
+
+
+
+				},
+				error : function (error) {
+					alert("Error: " + error.code + " " + error.message);
+				}
+			});
+
+
+Share = {
+    /**
+     * Показать пользователю дилог шаринга в сооветствии с опциями
+     * Метод для использования в inline-js в ссылках
+     * При блокировке всплывающего окна подставит нужный адрес и ползволит браузеру перейти по нему
+     *
+     * @example <a href="" onclick="return share.go(this)">like+</a>
+     *
+     * @param Object _element - элемент DOM, для которого
+     * @param Object _options - опции, все необязательны
+     */
+    go: function(_element, _options) {
+        var
+            self = Share,
+            options = $.extend(
+                {
+                    type:       'vk',    // тип соцсети
+                    url:        location.href,  // какую ссылку шарим
+                    count_url:  location.href,  // для какой ссылки крутим счётчик
+                    title:      document.title, // заголовок шаринга
+                    image:        '',             // картинка шаринга
+                    text:       '',             // текст шаринга
+                },
+                $(_element).data(), // Если параметры заданы в data, то читаем их
+                _options            // Параметры из вызова метода имеют наивысший приоритет
+            );
+
+        if (self.popup(link = self[options.type](options)) === null) {
+            // Если не удалось открыть попап
+            if ( $(_element).is('a') ) {
+                // Если это <a>, то подставляем адрес и просим браузер продолжить переход по ссылке
+                $(_element).prop('href', link);
+                return true;
+            }
+            else {
+                // Если это не <a>, то пытаемся перейти по адресу
+                location.href = link;
+                return false;
+            }
+        }
+        else {
+            // Попап успешно открыт, просим браузер не продолжать обработку
+            return false;
+        }
+    },
+
+    // ВКонтакте
+    vk: function(_options) {
+        var options = $.extend({
+                url:    location.href,
+                title:  document.title,
+                image:  '',
+                text:   '',
+            }, _options);
+
+        return 'http://vkontakte.ru/share.php?'
+            + 'url='          + encodeURIComponent(options.url)
+            + '&title='       + encodeURIComponent(options.title)
+            + '&description=' + encodeURIComponent(options.text)
+            + '&image='       + encodeURIComponent(options.image)
+            + '&noparse=true';
+    },
+
+    // Одноклассники
+    ok: function(_options) {
+        var options = $.extend({
+                url:    location.href,
+                text:   '',
+            }, _options);
+
+        return 'http://www.odnoklassniki.ru/dk?st.cmd=addShare&st.s=1'
+            + '&st.comments=' + encodeURIComponent(options.text)
+            + '&st._surl='    + encodeURIComponent(options.url);
+    },
+
+    // Facebook
+    fb: function(_options) {
+        var options = $.extend({
+                url:    location.href,
+                title:  document.title,
+                image:  '',
+                text:   '',
+            }, _options);
+
+        return 'http://www.facebook.com/sharer.php?s=100'
+            + '&p[title]='     + encodeURIComponent(options.title)
+            + '&p[summary]='   + encodeURIComponent(options.text)
+            + '&p[url]='       + encodeURIComponent(options.url)
+            + '&p[images][0]=' + encodeURIComponent(options.image);
+    },
+
+    // Живой Журнал
+    lj: function(_options) {
+        var options = $.extend({
+                url:    location.href,
+                title:  document.title,
+                text:   '',
+            }, _options);
+
+        return 'http://livejournal.com/update.bml?'
+            + 'subject='        + encodeURIComponent(options.title)
+            + '&event='         + encodeURIComponent(options.text + '<br/><a href="' + options.url + '">' + options.title + '</a>')
+            + '&transform=1';
+    },
+
+    // Твиттер
+    tw: function(_options) {
+        var options = $.extend({
+                url:        location.href,
+                count_url:  location.href,
+                title:      document.title,
+            }, _options);
+
+        return 'http://twitter.com/share?'
+            + 'text='      + encodeURIComponent(options.title)
+            + '&url='      + encodeURIComponent(options.url)
+            + '&counturl=' + encodeURIComponent(options.count_url);
+    },
+
+    // Mail.Ru
+    mr: function(_options) {
+        var options = $.extend({
+                url:    location.href,
+                title:  document.title,
+                image:  '',
+                text:   '',
+            }, _options);
+
+        return 'http://connect.mail.ru/share?'
+            + 'url='          + encodeURIComponent(options.url)
+            + '&title='       + encodeURIComponent(options.title)
+            + '&description=' + encodeURIComponent(options.text)
+            + '&imageurl='    + encodeURIComponent(options.image);
+    },
+
+    // Открыть окно шаринга
+    popup: function(url) {
+        return window.open(url,'','toolbar=0,status=0,scrollbars=1,width=626,height=436');
+    }
+}
+
+$(document).on('click', '.sharemenu', function(){
+    Share.go(this);
+});
+
+			
+			
+		</script>
+	</body>
+</html>
+					

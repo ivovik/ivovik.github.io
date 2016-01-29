@@ -1,0 +1,48 @@
+	<link href="css/menu.css" rel="stylesheet"></link>
+
+	<script src="js/jquery-2.1.3.min.js"></script>
+		
+	<div class="align" id="menu" height="40px" style="position:relative; margin-top:10px;">
+		
+		<div class="toggle" style=" display:inline-block;">
+			<ul style="border:none">
+				<li class="active" id="menuActions">
+					Акции
+				</li>
+			
+				<li class="inactive" id="menuOnline">
+					Онлайн-магазины
+				</li>
+			
+			</ul>
+		</div>
+	</div>
+	
+	<script>
+	$("#menuActions").click(function () {
+		if ($(this).hasClass("inactive")) {
+			$('.active').each(function () {
+				$(this).removeClass('active');
+				$(this).addClass('inactive');
+			});
+			$(this).removeClass('inactive');
+			$(this).addClass('active');
+			parent.document.getElementsByTagName( 'frameset' )[ 0 ].rows="40px,*,0";
+			return false;
+		}
+	});
+
+	$("#menuOnline").click(function () {
+		if ($(this).hasClass("inactive")) {
+			$('.active').each(function () {
+				$(this).removeClass('active');
+				$(this).addClass('inactive');
+			});
+			$(this).removeClass('inactive');
+			$(this).addClass('active');
+			parent.document.getElementsByTagName( 'frameset' )[ 0 ].rows="40px,0,*";
+			return false;
+		}
+	});
+
+	</script>
